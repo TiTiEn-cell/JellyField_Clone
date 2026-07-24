@@ -42,11 +42,6 @@ public class GamePlayManager : MonoBehaviour
     {
         StartCoroutine(IProcess(isWin));
     }
-
-    public void BackToHome()
-    {
-        StartCoroutine(ITryBackHOme());
-    }
         
     private IEnumerator IProcess(bool isWin)
     {
@@ -71,14 +66,6 @@ public class GamePlayManager : MonoBehaviour
 
         }
 
-    }
-
-
-    private IEnumerator ITryBackHOme()
-    {
-        yield return new WaitForSeconds(0.1f);
-        //yield return IShowInterstitalAds(isBackToHome: true);
-        GameService.instance.ShowHome();
     }
 
     /*public IEnumerator IShowInterstitalAds(bool isBackToHome = false)

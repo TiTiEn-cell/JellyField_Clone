@@ -46,12 +46,12 @@ public enum GameState
 }
 
 
-[Serializable]
+/*[Serializable]
 public enum Placement
 {
     Home = 1,
     GamePlay = 2,
-}
+}*/
 
 [Serializable]
 public enum ItemID

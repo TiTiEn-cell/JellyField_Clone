@@ -13,7 +13,6 @@ public class GameService : SingletonMono<GameService>
     public List<string> CurPoolList { get; set; }
 
     public bool IsDebug = true;
-    public Placement CurrentPlacement;
 
     private float progress = 0;
     private float progressMax;
@@ -55,49 +54,34 @@ public class GameService : SingletonMono<GameService>
     private IEnumerator IServiceProcessing()
     {
         progressMax = 0.1f;
-#if UNITY_EDITOR
-        // yield return GameConfigManager.instance.ReloadLevelConfig();
-#endif
+        MessageBus.Instance.Initialize();
 
         progressMax = 0.2f;
-         //yield return InitFireBase();
-
-        progressMax = 0.25f;
-         //yield return ICheckRemoteConfig();
-
-        progressMax = 0.3f;
-         //yield return ICheckUpdateVersion();
-
-        progressMax = 0.35f;
-         //InitAppFlyer();
-
-        progressMax = 0.4f;
-        MessageBus.Instance.Initialize();
         AudioController.instance.InitHaptic();
 
-        progressMax = 0.5f;
+        progressMax = 0.25f;
         yield return UserDataService.Instance.Init();
 
+        progressMax = 0.3f;
+
+        progressMax = 0.35f;
+
+        progressMax = 0.4f;
+
+        progressMax = 0.5f;
+
         progressMax = 0.6f;
-        //IAPManager.Instance.Init();
-        //InitAdsMax();
 
         progressMax = 0.7f;
-        // InitGGAds();
 
         progressMax = 0.8f;
 
         progressMax = 0.9f;
 
-        InitPoolManager();
-        yield return new WaitForSeconds(1f);
         progressMax = 1f;
-        CurrentPlacement = Placement.Home;
-        //yield return CheckShowOpenAppAds();
-        yield return IShowTransition();
-        GUIManager.instance.ShowGUI(GUIName.GUI_Main_ScreenHandler);
-        GUIManager.instance.HideGUI(GUIName.GUI_LoadingGame_ScreenHandler);
-        GUIManager.instance.HideGUI(GUIName.GUI_Transition_ScreenHandler);
+        yield return new WaitForSeconds(1f);
+        PlayGame();
+        yield return new WaitForSeconds(1f);
     }
 
     public void PlayGame(bool isReplay = false)
@@ -218,11 +202,6 @@ public class GameService : SingletonMono<GameService>
         StartLoadGamePlay();
     }
 
-    public void ShowHome()
-    {
-        StartCoroutine(IShowHome());
-    }
-
     public void ShowSettings()
     {
         //GUIManager.instance.ShowGUI(GUIName.GUI_Settings_PopupHandler);
@@ -231,11 +210,6 @@ public class GameService : SingletonMono<GameService>
     private void StartLoadGamePlay()
     {
         StartCoroutine(IStartLoadGamePlay());
-    }
-
-    private void InitPoolManager()
-    {
-        PoolManager.instance.Init();
     }
 
 
@@ -259,7 +233,6 @@ public class GameService : SingletonMono<GameService>
 
         yield return StartCoroutine(ILoadScene(SceneName.GamePlay));
         GamePlayManager.Instance.InitGamePlay();
-        CurrentPlacement = Placement.GamePlay;
         IsStartLoadGamePlay = false;
     }
 
@@ -275,25 +248,6 @@ public class GameService : SingletonMono<GameService>
     }*/
 
     #endregion
-
-    private IEnumerator IShowHome()
-    {
-        CurrentPlacement = Placement.Home;
-#if USE_ADS
-        AdsManager.instance.StartCount = false;
-#endif
-
-        yield return IShowTransition();
-        GUIManager.instance.CloseAll(ListGUINotAllowClose);
-
-        //TryClearGamePlay();
-
-        yield return ILoadScene(SceneName.Main, () =>
-        {
-            GUIManager.instance.ShowGUI(GUIName.GUI_Main_ScreenHandler);
-            GUIManager.instance.HideGUI(GUIName.GUI_Transition_ScreenHandler);
-        });
-    }
 
 
 
